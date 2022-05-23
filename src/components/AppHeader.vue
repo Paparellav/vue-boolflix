@@ -2,8 +2,12 @@
   <header class="header">
     <h1 class="header__title">Boolflix</h1>
     <div class="header__nav">
-      <input type="text" placeholder="Cerca film, serie TV ecc." />
-      <button>Cerca</button>
+      <input
+        type="text"
+        placeholder="Cerca film, serie TV ecc."
+        v-model="searchWord"
+      />
+      <button @click="searchFunction">Cerca</button>
     </div>
   </header>
 </template>
@@ -11,6 +15,16 @@
 <script>
 export default {
   name: "AppHeader",
+  data: function () {
+    return {
+      searchWord: "",
+    };
+  },
+  methods: {
+    searchFunction() {
+      console.log("Sto cercando");
+    },
+  },
 };
 </script>
 
