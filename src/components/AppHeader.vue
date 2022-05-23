@@ -7,7 +7,7 @@
         placeholder="Cerca film, serie TV ecc."
         v-model="searchWord"
       />
-      <button @click="searchFunction">Cerca</button>
+      <button @click="$emit('parolaCercata', searchWord)">Cerca</button>
     </div>
   </header>
 </template>
