@@ -35,10 +35,13 @@
           <span
             class="stars_section_span"
             v-for="(item, index) in voteStars"
-            :key="index"
+            :key="'A' + index"
             ><i class="fas fa-star"></i
           ></span>
         </div>
+      </li>
+      <li>
+        <p>{{ cardObj.overview }}</p>
       </li>
     </ul>
   </div>
@@ -149,6 +152,7 @@ export default {
 
 .main__card {
   width: calc(100% / 6 - 2rem);
+  height: 100%;
   padding: 1rem;
   margin: 1rem 1rem;
   display: flex;
@@ -158,6 +162,7 @@ export default {
 
   &-menu {
     font-size: 0.8rem;
+    display: none;
 
     li {
       margin: 0.8rem 0;
@@ -178,5 +183,11 @@ export default {
       }
     }
   }
+}
+.main__card:hover img {
+  display: none;
+}
+.main__card:hover .main__card-menu {
+  display: block;
 }
 </style>
