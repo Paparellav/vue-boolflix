@@ -1,24 +1,44 @@
 <template>
   <div class="main__card">
+    <img
+      :src="`https://image.tmdb.org/t/p/w342/${
+        cardObj.poster_path ? cardObj.poster_path : cardObj.backdrop_path
+      }`"
+      :alt="cardObj.title ? cardObj.title : cardObj.name"
+    />
     <ul class="main__card-menu">
-      <li>{{ cardObj.title ? cardObj.title : cardObj.name }}</li>
       <li>
-        {{
-          cardObj.original_title
-            ? cardObj.original_title
-            : cardObj.original_name
-        }}
+        <p>Titolo: {{ cardObj.title ? cardObj.title : cardObj.name }}</p>
       </li>
       <li>
-        <span class="fi" :class="`fi-${flagsUrl}`"></span>
-        {{ cardObj.original_language }}
+        <p>
+          Titolo originale:
+          {{
+            cardObj.original_title
+              ? cardObj.original_title
+              : cardObj.original_name
+          }}
+        </p>
       </li>
-      <li>{{ cardObj.vote_average }}</li>
       <li>
-        <img
-          :src="`https://image.tmdb.org/t/p/w342/${cardObj.poster_path}`"
-          :alt="cardObj.title ? cardObj.title : cardObj.name"
-        />
+        <div>Lingua: <span class="fi" :class="`fi-${flagsUrl}`"></span></div>
+      </li>
+      <li>
+        <div class="stars_section">
+          Voto:
+          <span
+            class="stars_section_span gold"
+            v-for="(item, index) in voteAverage"
+            :key="index"
+            ><i class="fas fa-star"></i
+          ></span>
+          <span
+            class="stars_section_span"
+            v-for="(item, index) in voteStars"
+            :key="index"
+            ><i class="fas fa-star"></i
+          ></span>
+        </div>
       </li>
     </ul>
   </div>
@@ -31,7 +51,10 @@ export default {
     cardObj: Object,
   },
   data: function () {
-    return {};
+    return {
+      voteAverage: Math.ceil(this.cardObj.vote_average / 2),
+      voteStars: 5 - Math.ceil(this.cardObj.vote_average / 2),
+    };
   },
   computed: {
     flagsUrl: function () {
@@ -122,10 +145,10 @@ export default {
 
 <style lang="scss" scoped>
 @import "~flag-icons/css/flag-icons.css";
+@import "~@fortawesome/fontawesome-free/css/all.min.css";
 
 .main__card {
   width: calc(100% / 6 - 2rem);
-  height: 300px;
   padding: 1rem;
   margin: 1rem 1rem;
   display: flex;
@@ -134,15 +157,24 @@ export default {
   border: 2px solid #b82b28;
 
   &-menu {
-    padding: 0 1rem;
-    font-size: 1.25rem;
+    font-size: 0.8rem;
 
     li {
       margin: 0.8rem 0;
+      display: flex;
 
-      :first-child {
-        width: 20px;
-        height: 20px;
+      .stars_section {
+        vertical-align: middle;
+        &_span {
+          margin-left: 0.1rem;
+          i {
+            margin: 0 0.03rem;
+          }
+        }
+      }
+
+      .gold {
+        color: #febc00;
       }
     }
   }
