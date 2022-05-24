@@ -1,6 +1,8 @@
 <template>
   <header class="header">
-    <h1 class="header__title">Boolflix</h1>
+    <div class="header__title">
+      <img src="../assets/img/logo.png" alt="logo-paparelflix" />
+    </div>
     <div class="header__nav">
       <input
         type="text"
@@ -38,9 +40,11 @@ export default {
   background-color: #141414;
 
   &__title {
-    font-size: 2.6rem;
-    text-transform: uppercase;
-    color: #b82b28;
+    width: 300px;
+
+    img {
+      width: 100%;
+    }
   }
 
   &__nav {
@@ -58,7 +62,7 @@ export default {
       border-radius: 10px;
       border: none;
       color: white;
-      background-color: #b82b28;
+      background-color: #db202c;
     }
   }
 }
