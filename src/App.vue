@@ -2,7 +2,7 @@
   <div id="app">
     <AppHeader @parolaCercata="filterMovie($event)" />
     <main>
-      <AppMain :movieArray="thumbs" />
+      <AppMain :movieArray="movieThumbs" :tvArray="tvThumbs" />
     </main>
   </div>
 </template>
@@ -20,7 +20,8 @@ export default {
   },
   data: function () {
     return {
-      thumbs: [],
+      movieThumbs: [],
+      tvThumbs: [],
       searchedWord: "",
     };
   },
@@ -35,8 +36,18 @@ export default {
           },
         })
         .then((response) => {
-          this.thumbs = response.data.results;
-          console.log(this.thumbs);
+          this.movieThumbs = response.data.results;
+        });
+      axios
+        .get("https://api.themoviedb.org/3/search/tv", {
+          params: {
+            api_key: "f8c2fc45385562d315d0006388000ea4",
+            query: event,
+          },
+        })
+        .then((response) => {
+          this.tvThumbs = response.data.results;
+          console.log(this.tvThumbs);
         });
     },
   },
