@@ -44,7 +44,7 @@
       <li>
         <div @click="findCrewCast(cardObj)">
           <div class="info-btn">Cast info</div>
-          <div>
+          <div v-if="infoOnOff">
             <div
               class="details"
               v-for="(item, index) in castArray"
@@ -53,8 +53,8 @@
               {{ item.original_name }}
             </div>
           </div>
-          <div>
-            <div class="info-btn">Genres info</div>
+          <div class="info-btn">Genres info</div>
+          <div v-if="infoOnOff">
             <div
               class="details"
               v-for="(item, index) in genresArray"
@@ -86,6 +86,7 @@ export default {
       voteStars: 5 - Math.ceil(this.cardObj.vote_average / 2),
       castArray: [],
       genresArray: [],
+      infoOnOff: false,
     };
   },
   methods: {
@@ -95,16 +96,20 @@ export default {
           api_key: "f8c2fc45385562d315d0006388000ea4",
         },
       };
-      axios
-        .get(`https://api.themoviedb.org/3/movie/${cardObj.id}/credits`, opt)
-        .then((response) => {
-          this.castArray = response.data.cast.slice(0, 5);
-        });
-      axios
-        .get(`https://api.themoviedb.org/3/movie/${cardObj.id}`, opt)
-        .then((response) => {
-          this.genresArray = response.data.genres;
-        });
+      const req1 = axios.get(
+        `https://api.themoviedb.org/3/movie/${cardObj.id}/credits`,
+        opt
+      );
+      const req2 = axios.get(
+        `https://api.themoviedb.org/3/movie/${cardObj.id}`,
+        opt
+      );
+
+      axios.all([req1, req2]).then((response) => {
+        this.castArray = response[0].data.cast.slice(0, 5);
+        this.genresArray = response[1].data.genres;
+        this.infoOnOff = !this.infoOnOff;
+      });
     },
   },
   computed: {
@@ -243,6 +248,7 @@ export default {
     margin: 0.5rem 0;
     border-radius: 10px;
     background-color: #b82b28;
+    cursor: pointer;
   }
 
   .details {
