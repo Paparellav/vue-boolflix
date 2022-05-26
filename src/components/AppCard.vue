@@ -1,11 +1,11 @@
 <template>
   <div class="main__card">
     <img
-      :src="`https://image.tmdb.org/t/p/w342/${
-        cardObj.poster_path ? cardObj.poster_path : cardObj.backdrop_path
-      }`"
+      v-if="cardObj.poster_path"
+      :src="`https://image.tmdb.org/t/p/w342/${cardObj.poster_path}`"
       :alt="cardObj.title ? cardObj.title : cardObj.name"
     />
+    <img v-else src="../assets/img/no-path.png" alt="logo" />
     <ul class="main__card-menu">
       <li>
         <p>Titolo: {{ cardObj.title ? cardObj.title : cardObj.name }}</p>
@@ -40,14 +40,41 @@
           ></span>
         </div>
       </li>
+      <!-- Informazioni aggiuntive -->
       <li>
-        <p>{{ cardObj.overview }}</p>
+        <div @click="findCrewCast(cardObj)">
+          <div class="info-btn">Cast info</div>
+          <div>
+            <div
+              class="details"
+              v-for="(item, index) in castArray"
+              :key="index"
+            >
+              {{ item.original_name }}
+            </div>
+          </div>
+          <div>
+            <div class="info-btn">Genres info</div>
+            <div
+              class="details"
+              v-for="(item, index) in genresArray"
+              :key="'A' + index"
+            >
+              {{ item.name }}
+            </div>
+          </div>
+        </div>
+      </li>
+      <!-- /Informazioni aggiuntive -->
+      <li>
+        <p class="overview">{{ cardObj.overview }}</p>
       </li>
     </ul>
   </div>
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: "AppCard",
   props: {
@@ -57,7 +84,28 @@ export default {
     return {
       voteAverage: Math.ceil(this.cardObj.vote_average / 2),
       voteStars: 5 - Math.ceil(this.cardObj.vote_average / 2),
+      castArray: [],
+      genresArray: [],
     };
+  },
+  methods: {
+    findCrewCast(cardObj) {
+      const opt = {
+        params: {
+          api_key: "f8c2fc45385562d315d0006388000ea4",
+        },
+      };
+      axios
+        .get(`https://api.themoviedb.org/3/movie/${cardObj.id}/credits`, opt)
+        .then((response) => {
+          this.castArray = response.data.cast.slice(0, 5);
+        });
+      axios
+        .get(`https://api.themoviedb.org/3/movie/${cardObj.id}`, opt)
+        .then((response) => {
+          this.genresArray = response.data.genres;
+        });
+    },
   },
   computed: {
     flagsUrl: function () {
@@ -151,14 +199,14 @@ export default {
 @import "~@fortawesome/fontawesome-free/css/all.min.css";
 
 .main__card {
-  width: calc(100% / 6 - 2rem);
-  height: 100%;
-  padding: 1rem;
+  width: calc(100% / 4 - 2rem);
+  padding: 0.7rem;
   margin: 1rem 1rem;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   border: 2px solid #b82b28;
+  overflow-y: auto;
 
   &-menu {
     font-size: 0.8rem;
@@ -178,10 +226,29 @@ export default {
         }
       }
 
+      .overview {
+        font-size: 0.7rem;
+      }
+
       .gold {
         color: #febc00;
       }
     }
+  }
+
+  .info-btn {
+    text-align: center;
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+    margin: 0.5rem 0;
+    border-radius: 10px;
+    background-color: #b82b28;
+  }
+
+  .details {
+    font-size: 0.7rem;
+    font-weight: lighter;
+    margin: 0.3rem 0;
   }
 }
 .main__card:hover img {

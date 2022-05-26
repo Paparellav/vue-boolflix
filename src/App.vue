@@ -28,27 +28,19 @@ export default {
   methods: {
     filterMovie(event) {
       this.searchedWord = event;
-      axios
-        .get("https://api.themoviedb.org/3/search/movie", {
-          params: {
-            api_key: "f8c2fc45385562d315d0006388000ea4",
-            query: event,
-          },
-        })
-        .then((response) => {
-          this.movieThumbs = response.data.results;
-        });
-      axios
-        .get("https://api.themoviedb.org/3/search/tv", {
-          params: {
-            api_key: "f8c2fc45385562d315d0006388000ea4",
-            query: event,
-          },
-        })
-        .then((response) => {
-          this.tvThumbs = response.data.results;
-          console.log(this.tvThumbs);
-        });
+      const opt = {
+        params: {
+          api_key: "f8c2fc45385562d315d0006388000ea4",
+          query: event,
+        },
+      };
+      const req1 = axios.get("https://api.themoviedb.org/3/search/movie", opt);
+      const req2 = axios.get("https://api.themoviedb.org/3/search/tv", opt);
+
+      axios.all([req1, req2]).then((response) => {
+        this.movieThumbs = response[0].data.results;
+        this.tvThumbs = response[1].data.results;
+      });
     },
   },
 };
